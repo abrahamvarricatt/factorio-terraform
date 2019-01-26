@@ -2,3 +2,5 @@ terraform.tfvars
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
+files/settings/server-settings.json
+files/saves/_autosave*
