@@ -1,0 +1,16 @@
+access_key = "INSERT-KEY"
+secret_key = "INSERT-SECRET"
+key_name = "factorio_key"
+
+# Valid regions
+###############
+# ca-central-1
+# ap-southeast-1
+# ap-south-1
+region = "ap-southeast-1"
+
+# Valid instance types
+######################
+# t2.medium
+# t3.large
+instance_type = "t2.medium"
