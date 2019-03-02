@@ -9,48 +9,48 @@ resource "aws_key_pair" "key" {
   public_key = "${file("${var.key_name}.pub")}"
 }
 
-resource "aws_security_group" "factorio-server" {
-  name        = "factorio-host-security-group"
-  description = "Allow SSH/game-connections to factorio host"
+# resource "aws_security_group" "factorio-server" {
+#   name        = "factorio-host-security-group"
+#   description = "Allow SSH/game-connections to factorio host"
 
-  tags {
-    Name = "factorio-server"
-  }
+#   tags {
+#     Name = "factorio-server"
+#   }
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   ingress {
+#     from_port   = 22
+#     to_port     = 22
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  ingress {
-    from_port   = 8
-    to_port     = 0
-    protocol    = "icmp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   ingress {
+#     from_port   = 8
+#     to_port     = 0
+#     protocol    = "icmp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  ingress {
-    from_port   = 34197
-    to_port     = 34197
-    protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
+#   ingress {
+#     from_port   = 34197
+#     to_port     = 34197
+#     protocol    = "udp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+# }
 
 resource "aws_instance" "factorio-server" {
   ami                     = "${lookup(var.server_ami, var.region)}"
   instance_type           = "${var.instance_type}"
   key_name                = "${var.key_name}"
-  vpc_security_group_ids  = ["${aws_security_group.factorio-server.id}"]
+  # vpc_security_group_ids  = ["${aws_security_group.factorio-server.id}"]
   associate_public_ip_address = true
 
   tags {
