@@ -11,48 +11,98 @@ resource "aws_key_pair" "key" {
   public_key = "${file("${var.key_name}.pub")}"
 }
 
-# resource "aws_security_group" "factorio-server" {
-#   name        = "factorio-host-security-group"
-#   description = "Allow SSH/game-connections to factorio host"
+resource "aws_vpc" "factorio-vpc" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
 
-#   tags {
-#     Name = "factorio-server"
-#   }
+  tags {
+    Name = "factorio-server"
+  }
+}
 
-#   ingress {
-#     from_port   = 22
-#     to_port     = 22
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+resource "aws_internet_gateway" "factorio-ig" {
+  vpc_id = "${aws_vpc.factorio-vpc.id}"
 
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+  tags {
+    Name = "factorio-server"
+  }
+}
 
-#   ingress {
-#     from_port   = 8
-#     to_port     = 0
-#     protocol    = "icmp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+resource "aws_subnet" "public_subnet_factorio" {
+  vpc_id                  = "${aws_vpc.factorio-vpc.id}"
+  cidr_block              = "10.0.1.0/24"
+  map_public_ip_on_launch = true
 
-#   ingress {
-#     from_port   = 34197
-#     to_port     = 34197
-#     protocol    = "udp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-# }
+  tags {
+    Name = "factorio-server"
+  }
+}
+
+resource "aws_route_table" "public_factorio" {
+  vpc_id = "${aws_vpc.factorio-vpc.id}"
+
+  tags {
+    Name = "factorio-server"
+  }
+}
+
+resource "aws_route" "public_internet_gateway_factorio" {
+  route_table_id         = "${aws_route_table.public_factorio.id}"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = "${aws_internet_gateway.factorio-ig.id}"
+}
+
+resource "aws_route_table_association" "public_factorio" {
+  subnet_id      = "${aws_subnet.public_subnet_factorio.id}"
+  route_table_id = "${aws_route_table.public_factorio.id}"
+}
+
+resource "aws_security_group" "factorio-server" {
+  name        = "factorio-host-security-group"
+  description = "Allow SSH/game-connections to factorio host"
+  vpc_id      = "${aws_vpc.factorio-vpc.id}"
+
+  tags {
+    Name = "factorio-server"
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 8
+    to_port     = 0
+    protocol    = "icmp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 34197
+    to_port     = 34197
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
 resource "aws_instance" "factorio-server" {
-  ami                     = "${lookup(var.server_ami, var.region)}"
-  instance_type           = "${var.instance_type}"
-  key_name                = "${var.key_name}"
-  # vpc_security_group_ids  = ["${aws_security_group.factorio-server.id}"]
+  ami                         = "${lookup(var.server_ami, var.region)}"
+  instance_type               = "${var.instance_type}"
+  key_name                    = "${var.key_name}"
+  monitoring                  = true
+  vpc_security_group_ids      = ["${aws_security_group.factorio-server.id}"]
+  subnet_id                   = "${aws_subnet.public_subnet_factorio.id}"
   associate_public_ip_address = true
 
   tags {
