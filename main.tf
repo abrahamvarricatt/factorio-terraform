@@ -173,10 +173,10 @@ resource "aws_instance" "factorio-server" {
   }
 
   /* Download saves to local before server termination */
-  provisioner "local-exec" {
-    when    = "destroy"
-    command = "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${var.key_name} -r ubuntu@${aws_instance.factorio-server.public_ip}:/opt/factorio/saves/. files/saves"
-  }
+  # provisioner "local-exec" {
+  #   when    = "destroy"
+  #   command = "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${var.key_name} -r ubuntu@${aws_instance.factorio-server.public_ip}:/opt/factorio/saves/. files/saves"
+  # }
 
 }
 
