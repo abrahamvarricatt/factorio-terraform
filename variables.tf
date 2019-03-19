@@ -26,3 +26,8 @@ variable "instance_type" {
 variable "key_name" {
   description = "The ssh key for the factorio server"
 }
+
+variable "factorio_version" {
+  description = "The version of factorio beta to install"
+  default = "0.17.15"
+}

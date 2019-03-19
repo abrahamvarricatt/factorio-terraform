@@ -14,3 +14,7 @@ region = "ap-southeast-1"
 # t2.medium
 # t3.large
 instance_type = "t2.medium"
+
+# Factorio version
+##################
+factorio_version = "0.17.15"

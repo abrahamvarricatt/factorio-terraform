@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt update
+sudo apt-get update
 apt install git
 touch /var/lib/cloud/instance/locale-check.skip
 
@@ -17,12 +17,12 @@ sudo su - factorio -c "cd /opt && git clone https://github.com/Bisa/factorio-ini
 sudo su - factorio -c "cd /opt/factorio-init/ && cp config.example config"
 # cd /opt/factorio-init/
 # cp config.example config
-sudo su - factorio -c "cd ~ && cp /tmp/factorio_headless_x64_0.16.51.tar.xz ."
+sudo su - factorio -c "cd ~ && cp /tmp/factorio_headless_x64.tar.xz ."
 # cd ~
-# wget -O factorio_headless_x64_0.16.51.tar.xz  https://www.factorio.com/get-download/0.16.51/headless/linux64
+# wget -O factorio_headless_x64.tar.xz  https://www.factorio.com/get-download/${var.factorio_version}/headless/linux64
 
 # installation
-sudo su - factorio -c "cd ~ && /opt/factorio-init/factorio install /home/factorio/factorio_headless_x64_0.16.51.tar.xz"
+sudo su - factorio -c "cd ~ && /opt/factorio-init/factorio install /home/factorio/factorio_headless_x64.tar.xz"
 # /opt/factorio-init/factorio install /home/factorio/factorio_headless_x64_0.16.51.tar.xz
 
 # settings copy

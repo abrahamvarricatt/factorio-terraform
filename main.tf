@@ -145,17 +145,17 @@ resource "aws_instance" "factorio-server" {
     }
   }
 
-  /* Copy server binaries to remote */
-  provisioner "file" {
-    source      = "files/server/factorio_headless_x64_0.16.51.tar.xz"
-    destination = "/tmp/factorio_headless_x64_0.16.51.tar.xz"
+  # /* Copy server binaries to remote */
+  # provisioner "file" {
+  #   source      = "https://www.factorio.com/get-download/${var.factorio_version}/headless/linux64"
+  #   destination = "/tmp/factorio_headless_x64.tar.xz"
 
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = "${file("factorio_key")}"
-    }
-  }
+  #   connection {
+  #     type        = "ssh"
+  #     user        = "ubuntu"
+  #     private_key = "${file("factorio_key")}"
+  #   }
+  # }
 
   /* Install the game */
   provisioner "remote-exec" {
@@ -166,6 +166,9 @@ resource "aws_instance" "factorio-server" {
     }
 
     inline = [
+      "cd ~",
+      "wget -O /tmp/factorio_headless_x64.tar.xz  https://www.factorio.com/get-download/${var.factorio_version}/headless/linux64",
+
       "chmod +x /tmp/setup.sh",
       "sudo /tmp/setup.sh",
 
